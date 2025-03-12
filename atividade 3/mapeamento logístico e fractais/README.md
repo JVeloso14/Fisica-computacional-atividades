@@ -1,0 +1,1 @@
+# Mapeamento logístico e fractais.
