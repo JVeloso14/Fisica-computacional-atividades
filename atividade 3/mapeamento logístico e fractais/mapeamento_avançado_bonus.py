@@ -36,11 +36,11 @@ regioes_zoom = [
     (3.82, 3.87),  
 ]
 
-# Configurações para zoom suave
-num_frames_por_zoom = 60  # Número de frames para cada transição de zoom
+
+num_frames_por_zoom = 60  
 total_frames = (len(regioes_zoom) - 1) * num_frames_por_zoom
 
-# Criar figura e eixo para a animação
+
 fig, ax = plt.subplots(figsize=(10, 7))
 
 # Função para calcular os limites de zoom interpolados para o frame atual
@@ -55,20 +55,20 @@ def calcular_limites_interpolados(frame):
     r_max_atual = r_max_origem + fator * (r_max_destino - r_max_origem)
     return (r_min_atual, r_max_atual)
 
-# Função de inicialização da animação
+
 def init():
     ax.clear()
     return []
 
-# Função de animação para cada frame
+
 def animar(frame):
     ax.clear()
     r_min, r_max = calcular_limites_interpolados(frame)
     
-    # Seleciona os valores de r que estão dentro dos limites atuais
+  
     r_filtrado = [r for r in lista_r if r_min <= r <= r_max]
     
-    # Plota os pontos correspondentes para cada valor de r filtrado
+  
     for r in r_filtrado:
         ax.plot([r] * M, pontos[r], '.', markersize=0.5, color='blue', alpha=0.5)
     
@@ -83,9 +83,8 @@ def animar(frame):
 animacao = FuncAnimation(fig, animar, frames=total_frames, 
                          init_func=init, interval=33.3, blit=False)
 
-# Salva a animação como GIF (opcional)
+# Salva a animação como GIF 
 animacao.save('mapa_logistico_zoom_suave.gif', writer='pillow', fps=30)
 
-# Exibe a animação na tela
 plt.tight_layout()
 plt.show()
