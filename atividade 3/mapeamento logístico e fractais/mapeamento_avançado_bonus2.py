@@ -15,83 +15,76 @@ class MapaLogistico:
             x_n.append(novo_valor)
         return x_n
 
-# Definir as regiões de zoom com densidade razoável de pontos
+# Parâmetros
+M = 2000     # Quantidade de iterações a serem exibidas (descartando as primeiras)
+N = 3000     # Total de iterações da simulação
+lista_r = np.linspace(1, 4, 2000)
+
+# Pré-calcular todos os pontos do mapa logístico para cada valor de r
+pontos = {}
+for r in lista_r:
+    simulacao = MapaLogistico(r, 0.5, N).mapa_logistico()
+    pontos[r] = simulacao[-M:]
+
+# Definir regiões de zoom (r_min, r_max) para cada etapa da animação
 regioes_zoom = [
-    {"range": (1.0, 4.0), "pontos": 2000, "M": 500, "N": 2000},    
-    {"range": (3.0, 4.0), "pontos": 3000, "M": 600, "N": 2000},    
-    {"range": (3.5, 4.0), "pontos": 4000, "M": 700, "N": 3000},     
-    {"range": (3.7, 3.9), "pontos": 5000, "M": 800, "N": 3000},     
-    {"range": (3.8, 3.9), "pontos": 6000, "M": 900, "N": 4000},    
-    {"range": (3.82, 3.87), "pontos": 7000, "M": 1000, "N": 4000},  
+    (1.0, 4.0), 
+    (3.0, 4.0),   
+    (3.5, 4.0),   
+    (3.7, 3.9),   
+    (3.8, 3.9),    
+    (3.82, 3.87),  
 ]
 
-# Criar figura e eixos
+
+num_frames_por_zoom = 60  
+total_frames = (len(regioes_zoom) - 1) * num_frames_por_zoom
+
+
 fig, ax = plt.subplots(figsize=(10, 7))
 
-# Variável global para armazenar pontos calculados
-pontos_cache = {}
+# Função para calcular os limites de zoom interpolados para o frame atual
+def calcular_limites_interpolados(frame):
+    indice_regiao = int(frame / num_frames_por_zoom)
+    if indice_regiao >= len(regioes_zoom) - 1:
+        return regioes_zoom[-1]
+    fator = (frame % num_frames_por_zoom) / num_frames_por_zoom
+    r_min_origem, r_max_origem = regioes_zoom[indice_regiao]
+    r_min_destino, r_max_destino = regioes_zoom[indice_regiao + 1]
+    r_min_atual = r_min_origem + fator * (r_min_destino - r_min_origem)
+    r_max_atual = r_max_origem + fator * (r_max_destino - r_max_origem)
+    return (r_min_atual, r_max_atual)
 
-# Função para calcular os pontos para uma região específica
-def calcular_pontos_regiao(indice):
-    regiao = regioes_zoom[indice]
-    
-    # Verificar se os pontos já foram calculados
-    if indice in pontos_cache:
-        return pontos_cache[indice]
-    
-    r_min, r_max = regiao["range"]
-    num_pontos = regiao["pontos"]
-    M = regiao["M"]
-    N = regiao["N"]
-    
-    lista_r = np.linspace(r_min, r_max, num_pontos)
-    pontos = {}
-    
-    for r in lista_r:
-        simulacao = MapaLogistico(r, 0.5, N).mapa_logistico()
-        pontos[r] = simulacao[-M:]
-    
-    # Armazenar no cache
-    resultado = (pontos, lista_r)
-    pontos_cache[indice] = resultado
-    return resultado
 
-# Função de inicialização
 def init():
     ax.clear()
     return []
 
-# Função de animação
-def animar(i):
+
+def animar(frame):
     ax.clear()
+    r_min, r_max = calcular_limites_interpolados(frame)
     
-    # Obter região atual
-    regiao = regioes_zoom[i]
-    r_min, r_max = regiao["range"]
+  
+    r_filtrado = [r for r in lista_r if r_min <= r <= r_max]
     
-    # Calcular pontos para a região atual
-    pontos, lista_r = calcular_pontos_regiao(i)
+  
+    for r in r_filtrado:
+        ax.plot([r] * M, pontos[r], '.', markersize=0.5, color='blue', alpha=0.5)
     
-    # Plotar pontos
-    for r in lista_r:
-        ax.plot([r] * len(pontos[r]), pontos[r], '.', markersize=0.05, color='blue', alpha=0.5)
-    
-    # Configurar limites e rótulos
     ax.set_xlim(r_min, r_max)
     ax.set_ylim(0, 1)
     ax.set_xlabel('r', fontsize=14)
     ax.set_ylabel('x_n', fontsize=14)
-    ax.set_title(f'Diagrama de Bifurcação - Zoom [{r_min:.3f}, {r_max:.3f}]\n'
-                f'Pontos: {regiao["pontos"]}', fontsize=16)
-    
-    plt.tight_layout()
+    ax.set_title(f'Diagrama de Bifurcação - Zoom [{r_min:.2f}, {r_max:.2f}]', fontsize=16)
     return []
 
-# Pré-calcular primeiro frame para inicializar a animação mais rapidamente
-calcular_pontos_regiao(0)
+# Cria a animação
+animacao = FuncAnimation(fig, animar, frames=total_frames, 
+                         init_func=init, interval=33.3, blit=False)
 
-# Criar animação
-ani = FuncAnimation(fig, animar, frames=len(regioes_zoom), 
-                    init_func=init, interval=1000, blit=True)
+# Salva a animação como GIF 
+animacao.save('mapa_logistico_zoom_suave.gif', writer='pillow', fps=30)
 
+plt.tight_layout()
 plt.show()
