@@ -67,7 +67,7 @@ def animar(i):
 animacao = FuncAnimation(fig, animar, frames=len(regioes_zoom), 
                          init_func=init, interval=2000, blit=False)
 
-animacao.save('mapa_logistico_zoom.gif', writer='pillow', fps=1/3)
+animacao.save('mapa_logistico_zoom3.gif', writer='pillow', fps=1/3)
 
 plt.tight_layout()
 plt.show()

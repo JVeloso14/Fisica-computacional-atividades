@@ -61,22 +61,19 @@ def init():
     ax.clear()
     return []
 
-# Função de animação
 def animar(i):
     ax.clear()
     
-    # Obter região atual
+    # Obtendo região atual
     regiao = regioes_zoom[i]
     r_min, r_max = regiao["range"]
     
-    # Calcular pontos para a região atual
     pontos, lista_r = calcular_pontos_regiao(i)
     
-    # Plotar pontos
+
     for r in lista_r:
         ax.plot([r] * len(pontos[r]), pontos[r], '.', markersize=0.05, color='blue', alpha=0.5)
     
-    # Configurar limites e rótulos
     ax.set_xlim(r_min, r_max)
     ax.set_ylim(0, 1)
     ax.set_xlabel('r', fontsize=14)
@@ -91,7 +88,10 @@ def animar(i):
 calcular_pontos_regiao(0)
 
 # Criar animação
-ani = FuncAnimation(fig, animar, frames=len(regioes_zoom), 
+animacao = FuncAnimation(fig, animar, frames=len(regioes_zoom), 
                     init_func=init, interval=1000, blit=True)
 
+animacao.save('mapa_logistico_zoom3.gif', writer='pillow', fps=1/3)
+
+plt.tight_layout()
 plt.show()
