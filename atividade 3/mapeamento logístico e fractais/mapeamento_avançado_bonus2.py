@@ -15,17 +15,16 @@ class MapaLogistico:
             x_n.append(novo_valor)
         return x_n
 
-# Parâmetros reduzidos
-M = 500   
-N = 1000     
-lista_r = np.linspace(1, 4, 500)
+
+M = 1000   
+N = 2000     
+lista_r = np.linspace(1, 4, 1000)
 
 pontos = {}
 for r in lista_r:
     simulacao = MapaLogistico(r, 0.5, N).mapa_logistico()
     pontos[r] = simulacao[-M:]
 
-# Definição as regiões de zoom
 TempoTotal = 5 # s
 fps = 30
 TotalFrames = fps * TempoTotal
@@ -52,7 +51,6 @@ def animar(frame):
     r_filtrado = [r for r in lista_r if r_min <= r <= r_max]
     
     for r in r_filtrado:
-        # Filtra pontos dentro da região de y
         pontos_filtrados = [p for p in pontos[r] if y_min <= p <= y_max]
         ax.plot([r] * len(pontos_filtrados), pontos_filtrados, 
                 '.', markersize=0.5, color='blue', alpha=0.5)
@@ -67,7 +65,7 @@ def animar(frame):
 animacao = FuncAnimation(fig, animar, frames=TotalFrames, 
                          init_func=init, interval=1000 / fps, blit=False)
 
-animacao.save('mapa_logistico_zoom_suave9.gif', writer='pillow', fps=30)
+animacao.save('mapa_logistico_zoom_maispontos2.gif', writer='pillow', fps=30)
 
 plt.tight_layout()
 plt.show()
