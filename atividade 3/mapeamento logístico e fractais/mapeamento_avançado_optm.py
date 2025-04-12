@@ -32,7 +32,7 @@ fps = 30
 TotalFrames = fps * TempoTotal
 
 inicial = np.array([1.0, 4.0, 0.0, 1.0])  # [r_min, r_max, y_min, y_max] inicial
-final = np.array([3.5, 3.6, 0.8, 0.9])    # [r_min, r_max, y_min, y_max] final
+final = np.array([3.55, 3.6, 0.8, 0.9])    # [r_min, r_max, y_min, y_max] final
 
 fig, ax = plt.subplots(figsize=(10, 7))
 
@@ -52,7 +52,7 @@ def animar(frame):
     r_min, r_max, y_min, y_max = coords(frame)
     
     # 1. Gerar mais valores de r na região de zoom
-    num_r_extra = 100  # Quantidade de novos r a gerar
+    num_r_extra = 1000  # Quantidade de novos r a gerar
     r_extra = np.linspace(r_min, r_max, num_r_extra)  # Novos valores de r
     
     # Calcular e plotar pontos adicionais
