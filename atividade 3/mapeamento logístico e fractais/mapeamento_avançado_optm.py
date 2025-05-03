@@ -51,18 +51,18 @@ def animar(frame):
     ax.clear()
     r_min, r_max, y_min, y_max = coords(frame)
     
-    # 1. Gerar mais valores de r na região de zoom
+    #Gera mais valores de r na região de zoom
     num_r_extra = 1000  # Quantidade de novos r a gerar
     r_extra = np.linspace(r_min, r_max, num_r_extra)  # Novos valores de r
     
-    # Calcular e plotar pontos adicionais
+    #Calcula e plotar pontos adicionais
     for r in r_extra:
         simulacao = MapaLogistico(r, 0.5, N).mapa_logistico()
         pontos_filtrados = [p for p in simulacao[-M:] if y_min <= p <= y_max]
         ax.plot([r] * len(pontos_filtrados), pontos_filtrados, 
                 '.', markersize=0.5, color='blue', alpha=0.5)
     
-    # 2. Plotar os pontos iniciais filtrados
+    # Plota os pontos iniciais filtrados
     r_filtrado = [r for r in lista_r if r_min <= r <= r_max]
     for r in r_filtrado:
         pontos_filtrados = [p for p in pontos[r] if y_min <= p <= y_max]
@@ -77,7 +77,7 @@ def animar(frame):
     ax.set_title(f'Diagrama de Bifurcação - Zoom [{r_min:.2f}, {r_max:.2f}]', fontsize=16)
     return []
 
-# Criar e salvar a animação
+
 animacao = FuncAnimation(fig, animar, frames=TotalFrames, 
                          init_func=init, interval=1000 / fps, blit=False)
 

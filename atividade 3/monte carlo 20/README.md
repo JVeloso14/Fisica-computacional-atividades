@@ -1,4 +1,0 @@
-# Simulação de Monte Carlo
-
-
-
