@@ -1,4 +1,4 @@
-# Mapeamento logístico e fractais- Atividade Bonus
+# Mapeamento logístico e fractais- explicando o código
 
 A biblioteca utilizada para implementar o zoom na forma de animação é o ```matplotlib.animation```. Para a implementação, é preciso import o ```FuncAnimation```. Incialmente, foi definida a lista dos valores de r, em que foi utilizado o ```np.linspace``` com 3000 subdivisões, juntamente com o número de pontos que vai rodar na função (M e N). Nesse caso, considera-se que $$N = M + 1000.$$
 
@@ -36,4 +36,4 @@ multiplica um valor de r dentro de r filtrados e multiplica pelo numero de ponto
 ```
 
 define alguns limites dos eixos x e y, bem como o nome de cada eixo e o titulo, retorna uma lista. Dessa maneira, executamos a simulação a partir do ```FuncAniamtion```, que recebe os seguintes parametro por definição:
-(1) a figura , (2) a função que chama em cada quadro, (3) os frames ( que no caso é do tamanho da lista regiões_zoom) , (4) 
+(1) a figura , (2) a função que chama em cada quadro, (3) os frames , (4) o intervalo (5) blit=True refere-se a uma otimização que permite desenhar apenas as partes da imagem que foram alteradas em cada quadro, em vez de redesenhar a imagem inteira.
